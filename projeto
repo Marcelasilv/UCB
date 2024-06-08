@@ -1,0 +1,148 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Estrutura para armazenar os dados de uma pessoa
+typedef struct {
+    char nome[100];
+    char dataNascimento[11]; // DD/MM/AAAA
+    int idade;
+    char cpf[12]; // Apenas números, sem pontos ou traço
+    char endereco[200];
+} Pessoa;
+
+// Função para cadastrar uma nova pessoa
+void cadastrarPessoa(Pessoa **pessoas, int *numPessoas) {
+    (*numPessoas)++;
+    *pessoas = realloc(*pessoas, (*numPessoas) * sizeof(Pessoa));
+    Pessoa *novaPessoa = *pessoas + (*numPessoas) - 1;
+
+    printf("\nCadastro de Pessoa %d\n", *numPessoas);
+    printf("Nome: ");
+    scanf(" %[^\n]", novaPessoa->nome);
+    printf("Data de Nascimento (DD/MM/AAAA): ");
+    scanf(" %s", novaPessoa->dataNascimento);
+    printf("Idade: ");
+    scanf("%d", &novaPessoa->idade);
+    printf("CPF: ");
+    scanf(" %s", novaPessoa->cpf);
+    printf("Endereco: ");
+    scanf(" %[^\n]", novaPessoa->endereco);
+}
+
+// Função para exibir os dados de uma pessoa
+void exibirPessoa(Pessoa pessoa) {
+    printf("\nNome: %s\n", pessoa.nome);
+    printf("Data de Nascimento: %s\n", pessoa.dataNascimento);
+    printf("Idade: %d\n", pessoa.idade);
+    printf("CPF: %s\n", pessoa.cpf);
+    printf("Endereco: %s\n", pessoa.endereco);
+}
+
+// Função para encontrar o índice de uma pessoa pelo CPF
+int encontrarIndicePorCPF(Pessoa *pessoas, int numPessoas, const char *cpf) {
+    for (int i = 0; i < numPessoas; i++) {
+        if (strcmp(pessoas[i].cpf, cpf) == 0) {
+            return i;
+        }
+    }
+    return -1; // Retorna -1 se o CPF não for encontrado
+}
+
+// Função para alterar os dados de uma pessoa pelo CPF
+void alterarDadosPessoa(Pessoa *pessoas, int numPessoas) {
+    char cpf[12];
+    printf("Informe o CPF da pessoa que deseja alterar: ");
+    scanf("%s", cpf);
+
+    int indice = encontrarIndicePorCPF(pessoas, numPessoas, cpf);
+    if (indice != -1) {
+        printf("\nDados atuais da pessoa com CPF %s:\n", cpf);
+        exibirPessoa(pessoas[indice]);
+
+        printf("\nInforme os novos dados:\n");
+        printf("Nome: ");
+        scanf(" %[^\n]", pessoas[indice].nome);
+        printf("Data de Nascimento (DD/MM/AAAA): ");
+        scanf(" %s", pessoas[indice].dataNascimento);
+        printf("Idade: ");
+        scanf("%d", &pessoas[indice].idade);
+        printf("Endereco: ");
+        scanf(" %[^\n]", pessoas[indice].endereco);
+
+        printf("\nDados alterados com sucesso!\n");
+    } else {
+        printf("Pessoa com CPF %s nao encontrada.\n", cpf);
+    }
+}
+
+// Função para excluir uma pessoa pelo CPF
+void excluirPessoa(Pessoa **pessoas, int *numPessoas) {
+    char cpf[12];
+    printf("Informe o CPF da pessoa que deseja excluir: ");
+    scanf("%s", cpf);
+
+    int indice = encontrarIndicePorCPF(*pessoas, *numPessoas, cpf);
+    if (indice != -1) {
+        for (int i = indice; i < *numPessoas - 1; i++) {
+            (*pessoas)[i] = (*pessoas)[i + 1];
+        }
+        (*numPessoas)--;
+        *pessoas = realloc(*pessoas, (*numPessoas) * sizeof(Pessoa));
+        printf("Pessoa com CPF %s excluida com sucesso.\n", cpf);
+    } else {
+        printf("Pessoa com CPF %s nao encontrada.\n", cpf);
+    }
+}
+
+int main() {
+    Pessoa *pessoas = NULL;
+    int numPessoas = 0;
+    int opcao;
+
+    do {
+        printf("\nMenu:\n");
+        printf("1. Cadastrar pessoa\n");
+        printf("2. Exibir dados de uma pessoa\n");
+        printf("3. Alterar dados de uma pessoa\n");
+        printf("4. Excluir uma pessoa\n");
+        printf("5. Sair\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                cadastrarPessoa(&pessoas, &numPessoas);
+                break;
+            case 2: {
+                char cpf[12];
+                printf("Informe o CPF da pessoa que deseja exibir: ");
+                scanf("%s", cpf);
+
+                int indice = encontrarIndicePorCPF(pessoas, numPessoas, cpf);
+                if (indice != -1) {
+                    exibirPessoa(pessoas[indice]);
+                } else {
+                    printf("Pessoa com CPF %s nao encontrada.\n", cpf);
+                }
+                break;
+            }
+            case 3:
+                alterarDadosPessoa(pessoas, numPessoas);
+                break;
+            case 4:
+                excluirPessoa(&pessoas, &numPessoas);
+                break;
+            case 5:
+                printf("Saindo...\n");
+                break;
+            default:
+                printf("Opcao invalida. Tente novamente.\n");
+        }
+    } while (opcao != 5);
+
+    // Liberando a memória alocada dinamicamente
+    free(pessoas);
+
+    return 0;
+}
