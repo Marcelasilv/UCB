@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <conio.h>
+//01- escreva um programa que receba 2 números e mostre a soma, a subtração,
+//a multiplicação e a divisão desses números.
+main(){
+float valor1,valor2;
+ printf(''digite dois numeros'');
+ scanf(''%f %f, &valor1,&valor2'');
+ printf(''\n adicao : %.2f + %.2f = %.2f'', valor1,valor2( valor1 + valor2));
+ printf(''\n subtração : %.2f - %.2f - %.2f'', valor1, valor2,(valor1 - valor2));
+ printf(''\n multiplicacao : %.2f * %.2f= %.2f'', valor1,valor2,( valor1*valor2));
+ printf(''\n divisao : %.2f/ %.2f = %.2f'', valor1, valor2 (valor1/valor2));
+
+ getch();
+}
+
+02-
