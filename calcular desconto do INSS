@@ -1,0 +1,66 @@
+#include <stdio.h>
+
+// Função para calcular o desconto do INSS
+float calcularINSS(float salarioBruto) {
+    float descontoINSS;
+    
+    if (salarioBruto <= 1045.00)
+        descontoINSS = salarioBruto * 0.075;
+    else if (salarioBruto <= 2089.60)
+        descontoINSS = salarioBruto * 0.09;
+    else if (salarioBruto <= 3134.40)
+        descontoINSS = salarioBruto * 0.12;
+    else if (salarioBruto <= 6101.06)
+        descontoINSS = salarioBruto * 0.14;
+    else
+        descontoINSS = 6101.06 * 0.14;
+    
+    return descontoINSS;
+}
+
+// Função para calcular o desconto do IRRF
+float calcularIRRF(float salarioBruto) {
+    float descontoIRRF;
+    float salarioBase = salarioBruto - calcularINSS(salarioBruto);
+    
+    if (salarioBase <= 1903.98)
+        descontoIRRF = 0;
+    else if (salarioBase <= 2826.65)
+        descontoIRRF = (salarioBase * 0.075) - 142.80;
+    else if (salarioBase <= 3751.05)
+        descontoIRRF = (salarioBase * 0.15) - 354.80;
+    else if (salarioBase <= 4664.68)
+        descontoIRRF = (salarioBase * 0.225) - 636.13;
+    else
+        descontoIRRF = (salarioBase * 0.275) - 869.36;
+    
+    return descontoIRRF;
+}
+
+int main() {
+    int numFuncionarios, i;
+    
+    printf("Quantos funcionarios deseja cadastrar? ");
+    scanf("%d", &numFuncionarios);
+    
+    for (i = 0; i < numFuncionarios; i++) {
+        char nome[100], cargo[100];
+        float salarioBruto;
+        
+        printf("\nInforme o nome do funcionario: ");
+        scanf("%s", nome);
+        printf("Informe o cargo do funcionario: ");
+        scanf("%s", cargo);
+        printf("Informe o salario bruto do funcionario: ");
+        scanf("%f", &salarioBruto);
+        
+        float descontoINSS = calcularINSS(salarioBruto);
+        float descontoIRRF = calcularIRRF(salarioBruto);
+        float salarioLiquido = salarioBruto - descontoINSS - descontoIRRF;
+        
+        printf("\nNome: %s\nCargo: %s\nSalario Bruto: R$%.2f\nDesconto INSS: R$%.2f\nDesconto IRRF: R$%.2f\nSalario Liquido: R$%.2f\n",
+               nome, cargo, salarioBruto, descontoINSS, descontoIRRF, salarioLiquido);
+    }
+    
+    return 0;
+}
